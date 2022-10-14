@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/src/main.ts"></script>
+
+    <title>Reaper js</title>
+  </head>
+  <body>
+    <header>
+      <h1>Reaper js<span class="ghost">👻</span></h1>
+      <p>A very lightweight js library for building reactive vanilla js applications. Has reactivity inspired by <a class="link" href="https://www.solidjs.com/" noopener noreferer target="_blank">Solid js</a> and <a class="link" href="https://jquery.com/" noopener noreferer target="_blank">jQuery</a> esque dom manipulation</p>
+    </header>
+
+    <main>
+      <h2>Demos</h2>
+      <section id="counter">
+        <div class="code">
+          <pre>
+            <code>
+const Counter = (props?: {value: number}) => {
+  const [count, setCount] = createState(props?.value ?? 0)
+
+  return (
+    create('button')!.addClass('btn')
+      .on('click', () => setCount(count() + 1))
+      .append(
+        create('span')!.setText(() => `Count: ${count()}`)
+      )
+  )
+}            </code>
+          </pre>
+        </div>
+      </section>
+
+      <section id="clock">
+        <div class="code">
+          <pre>
+            <code>
+const Clock = () => {
+  const [date, setDate] = createState(new Date())
+  
+  const hours = () => date().getHours()
+  const mins = () => date().getMinutes()
+  const secs = () => date().getSeconds()
+  
+  setInterval(() => setDate(new Date()), 1000)
+
+  return (
+    create('p')!
+      .append(
+        create('span')!
+          .setText(() => `${hours().toString().padStart(2, '0')}`),
+        ': ',
+        create('span')!
+          .setText(() => `${mins().toString().padStart(2, '0')}`),
+        ': ',
+        create('span')!
+          .setText(() => `${secs().toString().padStart(2, '0')}`)
+      )
+      .setStyle({
+        fontSize: '2em',
+        fontFamily: 'Georgia'
+      })
+  )
+}            </code>
+          </pre>
+        </div>
+      </section>
+
+      <section id="hex-generator">
+        <div class="code">
+          <pre>
+            <code>
+const HexGenerator = (props?: {value: number}) => {
+  const [color, setColor] = createState(props?.value ?? 0x0055ff)
+  const colorHex = () => `#${color().toString(16).padStart(6, '0')}`
+
+  return (
+    create('div')!.setCss('position', 'relative')
+      .append(
+        create('p')!
+          .setText(() => colorHex())
+          .setStyle({
+            margin: '0.1em', 
+            padding: '0.25em 1em', 
+            position: 'absolute', 
+            top: '-2em', cursor: 'copy',
+            backgroundColor: () => colorHex()
+          })
+          .setAttr('title', 'Copy 🎨')
+          .on('click',() => {
+            navigator.clipboard.writeText(colorHex())
+          }),
+          
+        create('button')!.addClass('btn')
+          .setText('Random color')
+          .on('click', () => setColor(Math.round(Math.random() * 0xffffff)))
+      )
+  )
+}
+            </code>
+          </pre>
+        </div>
+      </section>
+
+      <section id="todo-list">
+        <div class="code">
+          <pre>
+            <code>
+const TodoList = () => {
+  const [todos, setTodos] = createState&ltTodo[]&gt([])
+  const [todo, setTodo] = createState('')
+
+  function addTodo(e:Event){
+    e.preventDefault()
+    if(todo() === '') return
+    setTodos([...todos(), {text: todo(), completed: false}])
+    setTodo('')
+  }
+
+  return (
+    create('div')!.append(
+      create('form')!.append(
+        create('input')!
+          .bindValue([todo, setTodo])
+        ,
+        create('button')!.addClass('btn').setText('Add')
+      )
+        .setCss('display', 'flex')
+        .on('submit', addTodo)
+      ,
+      create('ul')!.setChildren(() => {
+        if(todos().length === 0) {
+          return [create('p')!.setText('No todos available')]
+        }
+        else{
+          return (
+            todos().map(t => (
+              create('li')!.append(
+                create('button')!.setText('✔')
+                  .on('click', () => {
+                    setTodos(todos().filter(tt => (
+                      tt.text !== t.text
+                    )))
+                  })
+                ,
+                create('p')!.setText(t.text)
+                  .setStyle({
+                    textDecoration: t.completed ? 'line-through': '',
+                    color: t.completed ? '#999': '#333',
+                  })
+              )
+                .setCss('display', 'flex')
+            )) 
+          )
+        }
+      })
+    )
+  )
+}              
+            </code>
+          </pre>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
