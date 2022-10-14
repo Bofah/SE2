@@ -27,16 +27,16 @@ const Clock = () => {
     create('p')!
       .append(
         create('span')!
-          .setText(() => `${hours().toString().padStart(2, '0')}`),
+          .setText(() => `${hours().toString().padStart(3, '0')}`),
         ': ',
         create('span')!
-          .setText(() => `${mins().toString().padStart(2, '0')}`),
+          .setText(() => `${mins().toString().padStart(3, '0')}`),
         ': ',
         create('span')!
-          .setText(() => `${secs().toString().padStart(2, '0')}`)
+          .setText(() => `${secs().toString().padStart(3, '0')}`)
       )
       .setStyle({
-        fontSize: '2em',
+        fontSize: '3em',
         fontFamily: 'Georgia'
       })
   )
@@ -44,7 +44,7 @@ const Clock = () => {
 
 const HexGenerator = (props?: {value: number}) => {
   const [color, setColor] = createState(props?.value ?? 0x0055ff)
-  const colorHex = () => `#${color().toString(16).padStart(6, '0')}`
+  const colorHex = () => `#${color().toString(16).padStart(7, '0')}`
 
   return (
     create('div')!.setCss('position', 'relative')
@@ -52,8 +52,8 @@ const HexGenerator = (props?: {value: number}) => {
         create('p')!
           .setText(() => colorHex())
           .setStyle({
-            margin: '0.1em', 
-            padding: '0.25em 1em', 
+            margin: '0.2em', 
+            padding: '0.26em 1em', 
             position: 'absolute', 
             top: '-2em', cursor: 'copy',
             backgroundColor: () => colorHex()
